@@ -1,6 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 
+const { DB } = require('./config')
 const userRouter = require('./routes/user')
 const productRouter = require('./routes/product')
 const paymentRouter = require('./routes/payment')
@@ -23,7 +24,7 @@ app.use('/api/user', userRouter)
 app.use('/api/product', productRouter)
 app.use('/api/payment', paymentRouter)
 
-mongoose.connect('mongodb://localhost/shopping-mall', {
+mongoose.connect(DB, {
   useCreateIndex: true,
   useNewUrlParser: true,
   useUnifiedTopology: true,
