@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 
 const userRouter = require('./routes/user')
 const productRouter = require('./routes/product')
+const paymentRouter = require('./routes/payment')
 
 const app = express()
 
@@ -20,6 +21,7 @@ app.use((req, res, next) => {
 
 app.use('/api/user', userRouter)
 app.use('/api/product', productRouter)
+app.use('/api/payment', paymentRouter)
 
 mongoose.connect('mongodb://localhost/shopping-mall', {
   useCreateIndex: true,
