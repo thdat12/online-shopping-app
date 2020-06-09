@@ -2,12 +2,19 @@ import React, { useState, useEffect } from 'react'
 import { Form, Container, Button, Message } from 'semantic-ui-react'
 import { updateProduct, getProduct } from '../actions/productActions'
 import { connect } from 'react-redux'
+import FileUpload from '../components/FileUpload'
+
 const UpdateProductPage = props => {
+  const [images, setImages] = useState([])
+  const updateImages = newImages => {
+    setImages(images.concat(newImages))
+  }
   const productId = window.location.pathname.substr(16)
   const [values, setValues] = useState({
+    title: '',
     price: 0,
     description: '',
-    quantity: 1
+    quantity: 1,
   })
   const { detailProduct, msg } = props.products
   const { user } = props.user
@@ -17,20 +24,37 @@ const UpdateProductPage = props => {
   useEffect(() => {
     if (detailProduct) {
       setValues({
+        title: detailProduct.title,
         price: detailProduct.price,
         description: detailProduct.description,
         quantity: detailProduct.quantity,
       })
+      setImages(
+        detailProduct.images
+      )
     }
-  }, [detailProduct])
+  }, [detailProduct.images])
   const onChange = event => {
     setValues({ ...values, [event.target.name]: event.target.value })
   }
-
   const onSubmit = event => {
     event.preventDefault()
-    props.updateProduct(productId, values)
+    const varibles = {
+      title: values.title,
+      price: values.price,
+      description: values.description,
+      images: images,
+      quantity: values.quantity
+    }
+    props.updateProduct(productId, varibles)
   }
+  const onDelete = image => {
+    const currentImage = images.indexOf(image)
+    let newImage = [...images]
+    newImage.splice(currentImage, 1)
+    setImages(newImage)
+  }
+
   return (
     <Container>
       {msg && (
@@ -42,7 +66,7 @@ const UpdateProductPage = props => {
             name='title'
             label='Tile'
             type='text'
-            value={detailProduct.title}
+            value={values.title}
             readOnly
           />
           <Form.Input
@@ -52,6 +76,7 @@ const UpdateProductPage = props => {
             value={values.price}
             onChange={onChange}
           />
+
           <Form.Input
             name='quantity'
             label='Quantity'
@@ -59,39 +84,41 @@ const UpdateProductPage = props => {
             value={values.quantity}
             onChange={onChange}
           />
+
           <Form.TextArea
             name='description'
             label='Description'
             type='textarea'
             value={values.description}
-            readOnly
+            onChange={onChange}
           />
+          
           <div style={{
             display: 'flex',
-            width: '400px',
-            height: '300px',
+            maxWidth: '400px',
+            width: '350px',
+            height: '240px',
             overflowY: 'scroll',
-
+            border: '1px solid teal'
           }}>
-            {detailProduct.images.map((image, index) => (
+
+            {images && images.map((image, index) => (
               <div
+                onClick={() => onDelete(image)}
                 key={index}
-                style={{
-                  border: '1px solid teal',
-                  margin: '10px'
-                }}
               >
                 <img src={`http://localhost:5000/${image.split('\\').join('/')}`} alt={`${image}`}
                   style={{
                     minWidth: '300px',
                     width: '300px',
-                    height: '240px',
-
+                    height: '240px'
                   }}
                 />
+
               </div>
             ))}
           </div>
+          <FileUpload refreshFuntion={updateImages} />
           <Button color='teal' floated='right'>Update</Button>
         </Form>
       )

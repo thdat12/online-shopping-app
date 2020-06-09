@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { connect } from 'react-redux'
 import Dropzone from 'react-dropzone'
@@ -16,7 +16,7 @@ function FileUpload(props) {
       }
     }
     const { token } = props.user
-    if(token){
+    if (token) {
       config.headers['Authorization'] = token
     }
     formData.append('file', file[0])
@@ -38,7 +38,6 @@ function FileUpload(props) {
     setImages(newImage)
     props.refreshFuntion(newImage)
   }
-
   return (
     <div className='image-upload'>
       <Dropzone
@@ -48,7 +47,7 @@ function FileUpload(props) {
       >
         {({ getRootProps, getInputProps }) => (
           <div style={{
-            width: '300px',
+            width: '350px',
             height: '240px',
             border: '1px solid lightgray',
             display: 'flex',
@@ -73,7 +72,7 @@ function FileUpload(props) {
         overflowY: 'scroll',
         border: '1px solid teal'
       }}>
-        {images.map((image, index) => (
+        {images && images.map((image, index) => (
           <div
             onClick={() => onDelete(image)}
             key={index}
@@ -85,6 +84,7 @@ function FileUpload(props) {
                 height: '240px'
               }}
             />
+
           </div>
         ))}
       </div>
