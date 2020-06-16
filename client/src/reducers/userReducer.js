@@ -18,7 +18,8 @@ import {
   DECREASE_PRODUCT_QUANTITY,
   FORGOT_PASSWORD,
   RESET_PASSWORD,
-  GET_OWN_PAYMENT_LIST
+  GET_OWN_PAYMENT_LIST,
+  GET_PAYMENT_LIST_BY_ID
 } from '../actions/types'
 
 const initialState = {
@@ -144,6 +145,11 @@ export default function (state = initialState, action) {
         ...state,
         paymentList: action.payload,
         user: { ...state.user, paymentList: action.payload }
+      }  
+    case GET_PAYMENT_LIST_BY_ID: 
+      return{
+        ...state,
+        paymentList: state.paymentList.filter(payment => payment._id === action.payload._id),
       }  
     default:
       return state

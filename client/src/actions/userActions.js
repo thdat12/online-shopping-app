@@ -25,7 +25,8 @@ import {
   RESET_PASSWORD,
   DELETE_PAYMENT_ITEM,
   CLEAR_ERRORS,
-  GET_OWN_PAYMENT_LIST
+  GET_OWN_PAYMENT_LIST,
+  GET_PAYMENT_LIST_BY_ID
 } from './types'
 import { returnErrors } from './errorActions'
 
@@ -356,6 +357,18 @@ export const resetPassword = (values, token) => dispatch => {
     })
     .catch(err => {
       dispatch(returnErrors(err.response.data, err.response.status, 'FORGOT_PASSWORD_FAIL'))
+    })
+}
+
+export const getPaymentListById = (id) => (dispatch, getState) => {
+  const config = configToken(getState)
+  axios
+    .get(`http://localhost:5000/api/payment/${id}`, config)
+    .then(res => {
+      dispatch({
+        type: GET_PAYMENT_LIST_BY_ID,
+        payload: res.data
+      })
     })
 }
 

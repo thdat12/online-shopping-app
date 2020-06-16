@@ -51,4 +51,10 @@ router.delete('/:id', auth, async (req, res) => {
   }
 })
 
+router.get('/:id', auth, async (req, res) => {
+  const payment = await Payment.findById(req.params.id).populate('poster').populate('products').populate('buyer')
+  if(!payment) return res.json({error: "error"})
+  return res.json(payment)
+})
+
 module.exports = router;
