@@ -19,7 +19,8 @@ import {
   FORGOT_PASSWORD,
   RESET_PASSWORD,
   GET_OWN_PAYMENT_LIST,
-  GET_PAYMENT_LIST_BY_ID
+  GET_PAYMENT_LIST_BY_ID,
+  UPDATE_STATUS_PAYMENT
 } from '../actions/types'
 
 const initialState = {
@@ -120,7 +121,8 @@ export default function (state = initialState, action) {
     case UPDATE_USER_INFOR:
       return {
         ...state,
-        msg: action.payload
+        msg: action.payload.msg,
+        user: action.payload.user
       }
     case DECREASE_PRODUCT_QUANTITY:
       return {
@@ -149,8 +151,13 @@ export default function (state = initialState, action) {
     case GET_PAYMENT_LIST_BY_ID: 
       return{
         ...state,
-        paymentList: state.paymentList.filter(payment => payment._id === action.payload._id),
-      }  
+        // paymentList: state.paymentList.filter(payment => payment._id === action.payload._id),
+        paymentList: [action.payload]
+      }
+    case UPDATE_STATUS_PAYMENT:
+      return{
+        ...state,
+      }   
     default:
       return state
   }

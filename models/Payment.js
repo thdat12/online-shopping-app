@@ -21,6 +21,11 @@ const paymentSchema = new Schema({
     phoneNumber: String,
     totalPrice: Number
   },
+  status: {
+    type: String,
+    enum: ["Ordering", "Delivering", "Received"],
+    default: "Ordering"
+  },
   createAt: {
     type: Date,
     default: Date.now()

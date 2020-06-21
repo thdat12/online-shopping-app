@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-import { getOwnPaymentList } from '../actions/userActions'
+import { getOwnPaymentList, getPaymentListById, deletePaymentItem, updateStatusPayment } from '../actions/userActions'
 
-import { Container, Table, Button } from 'semantic-ui-react'
+import { Container, Table, Button, Icon } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 
 const UserPaymentList = props => {
@@ -10,8 +10,16 @@ const UserPaymentList = props => {
   useEffect(() => {
     props.getOwnPaymentList()
   }, [])
+  const onDeletePayment = id => {
+    const confirm = window.confirm("Delete This Payment ?")
+    if (confirm) {
+      props.deletePaymentItem(id)
+    }
+  }
+  const onClickConfirm = id => {
+    props.updateStatusPayment(id)
+  }
   return (
-
     <Container>
       {
         paymentList && (
@@ -21,6 +29,9 @@ const UserPaymentList = props => {
                 <Table.HeaderCell>Title</Table.HeaderCell>
                 <Table.HeaderCell>TotalPrice</Table.HeaderCell>
                 <Table.HeaderCell>Buyer</Table.HeaderCell>
+                <Table.HeaderCell>Date</Table.HeaderCell>
+                <Table.HeaderCell>Status</Table.HeaderCell>
+                <Table.HeaderCell>View</Table.HeaderCell>
                 <Table.HeaderCell>Delete</Table.HeaderCell>
               </Table.Row>
             </Table.Header>
@@ -46,10 +57,26 @@ const UserPaymentList = props => {
                     </Table.Cell>
                     <Table.Cell>{payment.data.totalPrice}$</Table.Cell>
                     <Table.Cell>{payment.buyer && payment.buyer.email}</Table.Cell>
+                    <Table.Cell>{new Date(payment.createAt).toLocaleString()}</Table.Cell>
+                    <Table.Cell>{payment.status}
+                      {payment.status === "Ordering" ? (
+                        <Button onClick={onClickConfirm.bind(this, payment._id)}>
+                          Confirm</Button>
+                      ) : (<Button disabled>Confirm</Button>)}
+                    </Table.Cell>
                     <Table.Cell>
-                      {/* {payment.createAt && Date.parse(isoTime ) > Date.parse(payment.createAt) + 1000*60*2 ? (
-                        <Button>No</Button>) : (<Button>Cancel</Button>)
-                      } */}
+                      <Link
+                        to={`/payment/${payment._id}`}
+                      >
+                        <Button icon>
+                          <Icon name='eye' />
+                        </Button>
+                      </Link>
+                    </Table.Cell>
+                    <Table.Cell>
+                      <Button icon color='red' onClick={onDeletePayment.bind(this, payment._id)}>
+                        <Icon name='trash' />
+                      </Button>
                     </Table.Cell>
                   </tr>
                 ))
@@ -66,4 +93,4 @@ const mapStateToProps = state => ({
   user: state.user
 })
 
-export default connect(mapStateToProps, { getOwnPaymentList })(UserPaymentList)
+export default connect(mapStateToProps, { getOwnPaymentList, getPaymentListById, deletePaymentItem, updateStatusPayment })(UserPaymentList)

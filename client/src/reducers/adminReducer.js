@@ -1,4 +1,4 @@
-import { GET_PAYMENT_LIST, GET_ALL_USERS, GET_USER, DELETE_USER, DELETE_PAYMENT_ITEM } from '../actions/types'
+import { GET_PAYMENT_LIST, GET_ALL_USERS, GET_USER, DELETE_USER, DELETE_PAYMENT_ITEM, ADMIN_GET_PAYMENT_LIST_BY_ID } from '../actions/types'
 
 const initialState = {
   userList: [],
@@ -31,9 +31,14 @@ export default function (state = initialState, action) {
       }
     }
     case DELETE_PAYMENT_ITEM:
-      return{
+      return {
         ...state,
         paymentList: state.paymentList.filter(item => item._id !== action.payload)
+      }
+    case ADMIN_GET_PAYMENT_LIST_BY_ID:
+      return {
+        ...state,
+        paymentList: [action.payload]
       }
     default:
       return state

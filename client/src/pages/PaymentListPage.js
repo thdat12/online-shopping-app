@@ -26,10 +26,13 @@ const PaymentListPage = props => {
           <Table>
             <Table.Header>
               <Table.Row>
-                <Table.HeaderCell>Nguoi Ban</Table.HeaderCell>
-                <Table.HeaderCell>Nguoi Mua</Table.HeaderCell>
-                <Table.HeaderCell>San Pham</Table.HeaderCell>
-                <Table.HeaderCell>Gia</Table.HeaderCell>
+                <Table.HeaderCell>Poster</Table.HeaderCell>
+                <Table.HeaderCell>Buyer</Table.HeaderCell>
+                <Table.HeaderCell>Products</Table.HeaderCell>
+                <Table.HeaderCell>Price</Table.HeaderCell>
+                <Table.HeaderCell>Date</Table.HeaderCell>
+                <Table.HeaderCell>Status</Table.HeaderCell>
+                <Table.HeaderCell>View</Table.HeaderCell>
                 <Table.HeaderCell>Delete</Table.HeaderCell>
               </Table.Row>
             </Table.Header>
@@ -57,6 +60,17 @@ const PaymentListPage = props => {
                         ))}
                     </Table.Cell>
                     <Table.Cell>{payment.data.totalPrice}$</Table.Cell>
+                    <Table.Cell>{new Date(payment.createAt).toLocaleString()}</Table.Cell>
+                    <Table.Cell>{payment.status}</Table.Cell>
+                    <Table.Cell>
+                      <Link
+                        to={`/payment/${payment._id}`}
+                      >
+                        <Button icon>
+                          <Icon name='eye' />
+                        </Button>
+                      </Link>
+                    </Table.Cell>
                     <Table.Cell>
                       <Button icon color='red' onClick={onDeletePayment.bind(this, payment._id)}>
                         <Icon name='trash' />

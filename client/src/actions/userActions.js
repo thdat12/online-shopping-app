@@ -26,7 +26,9 @@ import {
   DELETE_PAYMENT_ITEM,
   CLEAR_ERRORS,
   GET_OWN_PAYMENT_LIST,
-  GET_PAYMENT_LIST_BY_ID
+  GET_PAYMENT_LIST_BY_ID,
+  ADMIN_GET_PAYMENT_LIST_BY_ID,
+  UPDATE_STATUS_PAYMENT
 } from './types'
 import { returnErrors } from './errorActions'
 
@@ -61,7 +63,6 @@ export const getPaymentList = () => (dispatch, getState) => {
   const config = configToken(getState)
   axios.get('http://localhost:5000/api/payment', config)
     .then(res => {
-      console.log(res.data)
       dispatch({
         type: GET_PAYMENT_LIST,
         payload: res.data
@@ -365,11 +366,37 @@ export const getPaymentListById = (id) => (dispatch, getState) => {
   axios
     .get(`http://localhost:5000/api/payment/${id}`, config)
     .then(res => {
+      console.log(res.data)
       dispatch({
         type: GET_PAYMENT_LIST_BY_ID,
         payload: res.data
       })
     })
+}
+
+export const adminGetPaymentListById = (id) => (dispatch, getState) => {
+  const config = configToken(getState)
+  axios
+    .get(`http://localhost:5000/api/payment/${id}`, config)
+    .then(res => {
+      dispatch({
+        type: ADMIN_GET_PAYMENT_LIST_BY_ID,
+        payload: res.data
+      })
+    })
+}
+
+export const updateStatusPayment = id => (dispatch, getState) => {
+  const config = configToken(getState)
+  axios
+    .get(`http://localhost:5000/api/payment/updateStatus/${id}`, config)
+    .then(res => {
+      dispatch({
+        type: UPDATE_STATUS_PAYMENT,
+        payload: res.data
+      })
+    }
+    )
 }
 
 export const configToken = (getState) => {

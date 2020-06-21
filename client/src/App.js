@@ -54,7 +54,7 @@ function App(props) {
             <AuthRoute exact path='/user/history' component={History} />
             <AuthRoute exact path='/product/upload' component={UploadProduct} />
             <AuthRoute exact path='/product/update/:id' component={UpdateProductPage} />
-            <AuthRoute exact path='/user/payment/:id' component={ViewPaymentList} />
+            <AuthRoute exact path='/payment/:id' component={ViewPaymentList} />
             <Route exact path='/product/product_by_id/:productId' component={ProductDetail} />
             <AuthRoute exact path='/admin/dashboard' component={DashBoard} />
             <AuthRoute exact path='/admin/paymentList' component={PaymentListPage} />
