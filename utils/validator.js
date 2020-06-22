@@ -19,6 +19,8 @@ module.exports.validatorRegister = (firstName, lastName, email, phone, password,
   }
   if (password.trim() === '') {
     errors.password = 'Password can not be empty'
+  }else if (password.length < 6) {
+    errors.password = 'Password must be greater than 6 charaters'
   }
   if (password !== confirmPassword) {
     errors.password = 'Passwords are not match'
@@ -59,6 +61,24 @@ module.exports.validatorUploadProduct = (title, price, quantity) => {
   }
   if(quantity <=0){
     errors.quantity = 'Quantity must be greater than 0'
+  }
+  return {
+    errors,
+    valid: Object.keys(errors) < 1
+  }
+}
+
+
+module.exports.validatorUpdateUserInfor = (firstName, lastName, phone) => {
+  const errors = {}
+  if (firstName.trim() === '') {
+    errors.username = 'FirstName can not be empty'
+  }
+  if (lastName.trim() === '') {
+    errors.username = 'LastName can not be empty'
+  }
+  if (phone.length < 10) {
+    errors.phone = 'Phone Number must be at least 10 number'
   }
   return {
     errors,
