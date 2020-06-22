@@ -10,7 +10,7 @@ const Product = require('../models/Product')
 const Payment = require('../models/Payment')
 const { SECRET_KEY, GMAIL, GMPW } = require('../config')
 const auth = require('../middlewares/check-auth')
-const { validatorLogin, validatorRegister } = require('../utils/validator')
+const { validatorLogin, validatorRegister, validatorUpdateUserInfor } = require('../utils/validator')
 
 const router = express.Router()
 
@@ -201,7 +201,7 @@ router.get('/ownProducts', auth, async (req, res) => {
 //@ Get product is bought
 router.get('/history', auth, async (req, res) => {
   const user = await User.findById(req.user.id)
-  const history = await Payment.find({ '_id': { $in: user.history } },).populate('poster').populate('buyer').populate('products')
+  const history = await Payment.find({ '_id': { $in: user.history } },).sort({ createAt: -1 }).populate('poster').populate('buyer').populate('products')
   return res.json(history)
 })
 
@@ -235,7 +235,7 @@ router.post('/payment', auth, async (req, res) => {
   // moi vua sua o day ne //
   history.push(payment._id)
   /////////////////////////
-  
+
   const user = await User.findOneAndUpdate(
     { _id: req.user.id },
     { $push: { history: history }, $set: { cart: [] } },
@@ -252,8 +252,12 @@ router.post('/payment', auth, async (req, res) => {
 })
 
 router.post('/update', auth, async (req, res) => {
-  const user = await User.findById(req.user.id)
   const { firstName, lastName, phone } = req.body
+  const { valid, errors } = validatorUpdateUserInfor(firstName, lastName, phone)
+  if (!valid) {
+    return res.status(400).json({ errors })
+  }
+  const user = await User.findById(req.user.id)
   if (!user) {
     return res.json({ error: 'User does not exist' })
   }
@@ -261,7 +265,7 @@ router.post('/update', auth, async (req, res) => {
   user.lastName = lastName
   user.phone = phone
   await user.save()
-  return res.json({ msg: 'Update success' })
+  return res.json({ msg: 'Update success', user })
 })
 
 // forgot password
@@ -276,8 +280,8 @@ router.post('/forgot', function (req, res, next) {
     },
     function (token, done) {
       User.findOne({ email: req.body.email }, function (err, user) {
-        if (!user) {        
-          return res.json({error: 'User does not exsit'})
+        if (!user) {
+          return res.json({ error: 'User does not exsit' })
         }
         user.resetPasswordToken = token;
         user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
@@ -300,6 +304,7 @@ router.post('/forgot', function (req, res, next) {
         from: GMAIL,
         subject: 'Password Reset',
         text:
+          'This email is valid for 1 hour\n\n' +
           'Please click on the following link to reset your password\n\n' +
           'http://localhost:3000/user/reset/' + token + '\n\n' +
           'If you did not request this, please ignore this email and your password will remain unchanged.\n'
@@ -325,8 +330,8 @@ router.post('/reset/:token', async (req, res) => {
     resetPasswordExpires: { $gt: Date.now() }
   })
   if (!user) {
-    
-    return res.json({ error: 'User does not exist'  })
+
+    return res.json({ error: 'User does not exist' })
   }
   if (password === confirm) {
     const hashedPassword = await bcrypt.hash(password, 12)
@@ -365,7 +370,7 @@ router.get('/cart/decreaseProduct', auth, async (req, res) => {
 // get own payment list
 router.get('/paymentList', auth, async (req, res) => {
   const user = await User.findById(req.user.id)
-  const paymentList = await Payment.find({ '_id': { $in: user.paymentList } },).populate('poster').populate('buyer').populate('products')
+  const paymentList = await Payment.find({ '_id': { $in: user.paymentList } },).sort({ createAt: -1 }).populate('poster').populate('buyer').populate('products')
   return res.json(paymentList)
 })
 

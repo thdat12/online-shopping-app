@@ -11,7 +11,7 @@ router.get('/', auth, async (req, res) => {
   const isAdmin = req.user.role === 0 ? false : true
   if (isAdmin) {
     try {
-      const paymentList = await Payment.find({}).sort({createAt: -1}).populate('poster').populate('products').populate('buyer')
+      const paymentList = await Payment.find({}).sort({ createAt: -1 }).populate('poster').populate('products').populate('buyer')
       return res.json(paymentList)
     } catch (error) {
       throw error
@@ -25,7 +25,7 @@ router.delete('/:id', auth, async (req, res) => {
   await Payment.deleteOne(itemPayment)
   const buyer = await User.findById(itemPayment.buyer)
   const indexHistory = buyer.history.indexOf(itemPayment.id)
-  buyer.history.splice(indexHistory, 1) 
+  buyer.history.splice(indexHistory, 1)
   await User.findOneAndUpdate(
     { _id: itemPayment.buyer },
     { $set: { history: buyer.history } },
@@ -33,7 +33,7 @@ router.delete('/:id', auth, async (req, res) => {
   )
   const poster = await User.findById(itemPayment.poster)
   const indexPaymentList = poster.paymentList.indexOf(itemPayment.id)
-  poster.paymentList.splice(indexPaymentList, 1) 
+  poster.paymentList.splice(indexPaymentList, 1)
   await User.findByIdAndUpdate(
     { _id: itemPayment.poster },
     { $set: { paymentList: poster.paymentList } },
@@ -56,21 +56,23 @@ router.delete('/:id', auth, async (req, res) => {
 router.get('/:id', auth, async (req, res) => {
   const payment = await Payment.findById(req.params.id).populate('poster').populate('products').populate('buyer')
   if (!payment) return res.json({ error: "error" })
-  return res.json(payment)
+  if(payment.buyer._id == req.user.id || payment.poster._id == req.user.id ){
+    return res.json(payment)
+  }
 })
 
-router.get('/updateStatus/:id', auth, async (req,res) => {
+router.get('/updateStatus/:id', auth, async (req, res) => {
   const payment = await Payment.findById(req.params.id)
-  if(req.user.id == payment.poster){
+  if (req.user.id == payment.poster) {
     await Payment.findByIdAndUpdate(
       { _id: req.params.id },
       { $set: { status: "Delivering" } },
       { new: true }
     )
-  }else if(req.user.id == payment.buyer){
+  } else if (req.user.id == payment.buyer) {
     await Payment.findByIdAndUpdate(
       { _id: req.params.id },
-      { $set: { status: "Received" } },
+      { $set: { status: payment.status === 'Ordering' ? 'Cancel' : 'Received' } },
       { new: true }
     )
   }

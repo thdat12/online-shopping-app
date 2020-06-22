@@ -35,6 +35,7 @@ router.post('/uploadImage', auth, (req, res) => {
 
 router.post('/uploadProduct', auth, async (req, res) => {
   const {title, price, quantity} = req.body
+  console.log(req.body)
   const { errors, valid } = validatorUploadProduct(title, price, quantity)
   if (!valid) {
     return res.status(400).json({ errors })
@@ -83,12 +84,14 @@ router.post('/getProducts', async (req, res) => {
         .sort([[sortBy, order]])
         .skip(skip).limit(limit)
         .populate('buyer')
+        .populate('poster')
       return res.json({ products, popSize: products.length, searchTerm: term })
     } else {
       const products = await Product.find(findArgs)
         .sort([[sortBy, order]])
         .skip(skip).limit(limit)
         .populate('buyer')
+        .populate('poster')
       return res.json({ products, popSize: products.length })
     }
 
@@ -144,6 +147,7 @@ router.post('/update/:id', auth, async (req, res) => {
     product.price = req.body.price
     product.quantity = req.body.quantity
     product.description = req.body.description
+    product.images = req.body.images
     await product.save()
     return res.json({ msg: 'Update success' })
   } catch (error) {

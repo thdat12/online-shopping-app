@@ -23,7 +23,7 @@ const paymentSchema = new Schema({
   },
   status: {
     type: String,
-    enum: ["Ordering", "Delivering", "Received"],
+    enum: ["Ordering", "Delivering", "Received", "Cancel"],
     default: "Ordering"
   },
   createAt: {
