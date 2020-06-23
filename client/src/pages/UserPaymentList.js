@@ -9,16 +9,22 @@ const UserPaymentList = props => {
   const { paymentList } = props.user
   useEffect(() => {
     props.getOwnPaymentList()
-  }, [])
+  }, [props.user.paymentList])
   const onDeletePayment = id => {
     const confirm = window.confirm("Delete This Payment ?")
     if (confirm) {
       props.deletePaymentItem(id)
+      window.alert("Delete Successfully")
     }
   }
   const onClickConfirm = id => {
     props.updateStatusPayment(id)
   }
+  
+  var formatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  });
   return (
     <Container>
       {
@@ -55,7 +61,7 @@ const UserPaymentList = props => {
                           </Link>
                         ))}
                     </Table.Cell>
-                    <Table.Cell>{payment.data.totalPrice}$</Table.Cell>
+                    <Table.Cell>{formatter.format(payment.data.totalPrice)}$</Table.Cell>
                     <Table.Cell>{payment.buyer && payment.buyer.email}</Table.Cell>
                     <Table.Cell>{new Date(payment.createAt).toLocaleString()}</Table.Cell>
                     <Table.Cell>{payment.status}

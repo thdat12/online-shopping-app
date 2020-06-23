@@ -62,10 +62,12 @@ const ViewPaymentList = props => {
                 </Segment>
               </Segment.Group>
               <Segment.Group>
-                <Segment style={{ fontSize: '1.5rem' }} inverted color='blue'>Data</Segment>
-                <Segment>Receiver: {paymentList[0].data.receiver}<br />
-                Phone Number: {paymentList[0].data.phoneNumber}<br />
-                Location: {paymentList[0].data.location}</Segment>
+                <Segment style={{ fontSize: '1.5rem' }} inverted color='blue'>Reciver Infor</Segment>
+                <Segment>Receiver:&nbsp; {paymentList[0].data.receiver}<br />
+                Phone Number:&nbsp; {paymentList[0].data.phoneNumber}<br />
+                Location:&nbsp; {paymentList[0].data.location}<br />
+                Total Price:&nbsp; ${paymentList[0].data.totalPrice}
+                </Segment>
                 <Segment style={{fontSize: '1.5rem'}}>Status: {paymentList[0].status}</Segment>
               </Segment.Group>
             </GridColumn>

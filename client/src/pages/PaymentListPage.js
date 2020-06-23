@@ -19,6 +19,11 @@ const PaymentListPage = props => {
       props.deletePaymentItem(id)
     }
   }
+  
+  var formatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  });
   return (
     <div>
       {
@@ -59,7 +64,7 @@ const PaymentListPage = props => {
                           </Link>
                         ))}
                     </Table.Cell>
-                    <Table.Cell>{payment.data.totalPrice}$</Table.Cell>
+                    <Table.Cell>{formatter.format(payment.data.totalPrice)}$</Table.Cell>
                     <Table.Cell>{new Date(payment.createAt).toLocaleString()}</Table.Cell>
                     <Table.Cell>{payment.status}</Table.Cell>
                     <Table.Cell>
