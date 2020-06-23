@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { addProduct } from '../actions/productActions'
 
 import { connect } from 'react-redux'
@@ -45,7 +45,10 @@ const UploadProduct = props => {
     try {
       props.addProduct(varibles)
       props.clearErrors()
-      props.history.push('/')
+      const confirm = window.confirm("You have added Product")
+      if(confirm){
+        props.history.push('/')
+      }
     } catch (error) {
       alert('Fail to add Product')
     }
@@ -73,6 +76,7 @@ const UploadProduct = props => {
             placeholder='Enter your Title'
             value={values.title}
             onChange={onChange}
+            required
           />
           <Form.Group widths='equal'>
             <Form.Input
@@ -82,6 +86,7 @@ const UploadProduct = props => {
               placeholder='Enter your Price'
               value={values.price}
               onChange={onChange}
+              required
             />
             <Form.Input
               name='quantity'
@@ -90,6 +95,7 @@ const UploadProduct = props => {
               placeholder='Enter your Quantity'
               value={values.quantity}
               onChange={onChange}
+              required
             />
             <Form.Field
               label='Type'

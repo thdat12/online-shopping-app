@@ -19,9 +19,10 @@ const DashBoard = props => {
   }, [])
 
   const onDeleteUser = (id) => {
-    const confirm = window.confirm("Delet User ?")
+    const confirm = window.confirm("Delete User ?")
     if (confirm) {
       props.deleteUser(id)
+      window.alert("Delete user sucessfully")
     }
   }
 

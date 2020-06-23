@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import { resetPassword} from '../actions/userActions'
+import { resetPassword, configToken} from '../actions/userActions'
 
 import { Form, Container, Button, Message } from 'semantic-ui-react'
 
@@ -21,6 +21,10 @@ const ResetPasswordPage = props => {
       password: '',
       confirm: ''
     })
+    const confirm = window.confirm('Reset password successfully')
+    if(confirm){
+      props.history.push('/login')
+    }
   }
 
   return (

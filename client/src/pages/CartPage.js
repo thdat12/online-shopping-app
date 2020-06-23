@@ -73,6 +73,10 @@ const CartPage = props => {
   const onIncreaseQuantity = (productId) => {
     props.addToCart(productId)
   }
+  var formatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  });
   return (
     <Container>
       {
@@ -82,7 +86,9 @@ const CartPage = props => {
               <Table.Header>
                 <Table.Row>
                   <Table.HeaderCell>Image</Table.HeaderCell>
+                  <Table.HeaderCell>Title</Table.HeaderCell>
                   <Table.HeaderCell>Quantity</Table.HeaderCell>
+                  <Table.HeaderCell>Unit Price</Table.HeaderCell>
                   <Table.HeaderCell>Price</Table.HeaderCell>
                   <Table.HeaderCell>Remove</Table.HeaderCell>
                 </Table.Row>
@@ -99,12 +105,26 @@ const CartPage = props => {
                           />
                         </Link>
                       </Table.Cell>
+                      <Table.Cell>{product.title}</Table.Cell>
                       <Table.Cell>
-                        <Button onClick={onDecreaseQuantity.bind(this, product._id)}
-                          style={{ zoom: '70%' }}
-                          icon>
-                          <Icon name='minus' />
-                        </Button>
+                        {
+                          (product.quantity > 1) ? (
+
+                            <Button onClick={onDecreaseQuantity.bind(this, product._id)}
+                              style={{ zoom: '70%' }}
+                              icon>
+                              <Icon name='minus' />
+                            </Button>
+                          ) : (
+
+                              <Button onClick={onDecreaseQuantity.bind(this, product._id)}
+                                style={{ zoom: '70%' }}
+                                icon
+                                disabled>
+                                <Icon name='minus' />
+                              </Button>
+                            )
+                        }
                         {product.quantity}
                         <Button onClick={onIncreaseQuantity.bind(this, product._id)}
                           style={{
@@ -115,10 +135,14 @@ const CartPage = props => {
                           <Icon name='plus' />
                         </Button>
                       </Table.Cell>
-                      <Table.Cell>${product.price} </Table.Cell>
-                      <Table.Cell><button
-                        onClick={onRemoveCartItem.bind(this, product._id)}
-                      >Remove </button> </Table.Cell>
+                      <Table.Cell>{formatter.format(product.price)} </Table.Cell>
+                      <Table.Cell>{formatter.format(product.price*product.quantity)} </Table.Cell>
+                      <Table.Cell>
+                        <Button onClick={onRemoveCartItem.bind(this, product._id)}
+                          icon
+                          color='red'
+                        ><Icon name='trash' /></Button>
+                      </Table.Cell>
                     </tr>
                   )
                   )
@@ -126,7 +150,7 @@ const CartPage = props => {
               </Table.Body>
             </Table>
             {
-              ShowTotal ? <h1>Total: {Total}</h1> : <div></div>
+              ShowTotal ? <h1>Total: {formatter.format(Total)}</h1> : <div></div>
             }
             <Button
               color='teal'
@@ -139,26 +163,30 @@ const CartPage = props => {
               onClick={toggle}
             ><h2><Icon name='credit card outline' />Payment</h2></Button>
             <Modal as={Form} onSubmit={onPayment} open={open} size="tiny">
-              <Modal.Header>Nhap Thong Tin Giao Hang</Modal.Header>
+              <Modal.Header>Delivery Information</Modal.Header>
               <Modal.Content>
                 <Form.Input
                   fluid
                   name='receiver'
-                  placeholder='Nguoi Nhan'
+                  label='Receiver'
+                  placeholder='Receiver'
                   value={data.receiver}
                   onChange={onChange}
                 />
                 <Form.Input
                   fluid
                   name='location'
-                  placeholder='Dia chi'
+                  label='Location'
+                  placeholder='Location'
                   value={data.location}
                   onChange={onChange}
+                  required
                 />
                 <Form.Input
                   fluid
                   name='phoneNumber'
-                  placeholder='So dien thoai'
+                  label='Phone Number'
+                  placeholder='Phone Number'
                   value={data.phoneNumber}
                   onChange={onChange}
                 />

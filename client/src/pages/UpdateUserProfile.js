@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { Form, Container, Button, Message, Segment } from 'semantic-ui-react'
 import { updateUserInfor } from '../actions/userActions'
+import { clearErrors } from '../actions/errorActions'
 import { connect } from 'react-redux'
+import { set } from 'mongoose'
 const UpdateUserProfile = props => {
   const { user, msg } = props.user
+  const { errors } = props.error.msg
   const [values, setValues] = useState({
     firstName: '',
     lastName: '',
@@ -24,9 +27,26 @@ const UpdateUserProfile = props => {
   }, [props.user])
   const onSubmit = event => {
     event.preventDefault()
-    props.updateUserInfor(values)
+    try {
+      const varibles = {
+        firstName: values.firstName,
+        lastName: values.lastName,
+        phone: values.phone,
+        email: values.email,
+      }
+      props.updateUserInfor(varibles)
+      // const confirm = window.confirm('You have updated Infor')
+      // if (confirm)
+      //   props.history.push('/user/infor')
+      props.clearErrors()
+    } catch{
+      window.alert("Update Failed")
+    }
   }
 
+  const oncancel = () => {
+    props.history.push('/user/infor')
+  }
   return (
     <Container
       style={{
@@ -38,15 +58,27 @@ const UpdateUserProfile = props => {
       }}
     >
       {msg && (
-        <Message success>{msg.msg}</Message>
+        <Message success>{msg}</Message>
       )}
+      {
+        errors && (
+          Object.keys(errors).length > 0 && (
+            <Message negative
+              list={Object.values(errors).map((value) => (
+                <Message negative key={value}>{value}</Message>
+              ))}
+            >
+            </Message>
+          )
+        )
+      }
       <Segment color='teal'>
         <div
-        style={{
-          textAlign:'center',
-          fontSize:'1.5rem',
-          marginBottom:'1rem'
-        }}>
+          style={{
+            textAlign: 'center',
+            fontSize: '1.5rem',
+            marginBottom: '1rem'
+          }}>
           Update your Profile
         </div>
         <Form onSubmit={onSubmit}>
@@ -78,13 +110,15 @@ const UpdateUserProfile = props => {
           />
           <Button color='teal' floated='right'>Update</Button>
         </Form>
+        <Button color='red' floated='right' onClick={oncancel}>Back</Button>
       </Segment>
     </Container>
   )
 }
 
 const mapStateToProps = state => ({
-  user: state.user
+  user: state.user,
+  error: state.error
 })
 
-export default connect(mapStateToProps, { updateUserInfor })(UpdateUserProfile)
+export default connect(mapStateToProps, { updateUserInfor, clearErrors })(UpdateUserProfile)

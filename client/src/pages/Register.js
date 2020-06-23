@@ -85,6 +85,7 @@ const Register = props => {
                 placeholder='Enter your Phone'
                 value={values.phone}
                 onChange={onChange}
+                error={errors && errors.phone ? true : false}
               />
               <Form.Input
                 fluid
@@ -95,6 +96,7 @@ const Register = props => {
                 placeholder='Enter your Email'
                 value={values.email}
                 onChange={onChange}
+                error={errors && errors.email ? true : false}
               />
               <Form.Input
                 fluid
@@ -105,6 +107,7 @@ const Register = props => {
                 placeholder='Enter your password'
                 value={values.password}
                 onChange={onChange}
+                error={errors && errors.password ? true : false}
               />
               <Form.Input
                 fluid
@@ -115,6 +118,7 @@ const Register = props => {
                 placeholder='Confirm your password'
                 value={values.confirmPassword}
                 onChange={onChange}
+                error={errors && errors.password ? true : false}
               />
               <Button type='submit' color='red' fluid size='large'>Submit</Button>
             </Segment>

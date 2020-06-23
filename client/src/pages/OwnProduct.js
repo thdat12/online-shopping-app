@@ -18,8 +18,16 @@ const OwnProduct = props => {
     }
   }
   const onDeleteProduct = id => {
-    props.deleteProduct(id)
+    const confirm = window.confirm("Delete?")
+    if(confirm){
+      props.deleteProduct(id)
+    }
+    window.alert("Delete product successfully")
   }
+  var formatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  });
   return (
     <Container>{
       ownProduct.length > 0 ? (
@@ -45,16 +53,16 @@ const OwnProduct = props => {
                       </Link>
                     </Table.Cell>
                     <Table.Cell>{product.title}</Table.Cell>
-                    <Table.Cell>$ {product.price} </Table.Cell>
+                    <Table.Cell>{formatter.format(product.price)} </Table.Cell>
                     <Table.Cell>
-                        <Button onClick={onDeleteProduct.bind(this, product._id)}
+                      <Button onClick={onDeleteProduct.bind(this, product._id)}
                         icon
                         color='red'
-                        ><Icon name='trash' /></Button>
-                        <Button as={Link} to={`/product/update/${product._id}`}
+                      ><Icon name='trash' /></Button>
+                      <Button as={Link} to={`/product/update/${product._id}`}
                         icon
                         color='green'
-                        ><Icon name='edit outline' /></Button>
+                      ><Icon name='edit outline' /></Button>
                     </Table.Cell>
                   </tr>))
               }
@@ -64,6 +72,9 @@ const OwnProduct = props => {
         )
       ) : (<h1>No product</h1>)
     }
+    <Link to='/product/upload'>
+      <Button color='teal'>ADD NEW PRODUCT</Button>
+    </Link>
     </Container>
   )
 }

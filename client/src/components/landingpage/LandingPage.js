@@ -33,14 +33,17 @@ const LandingPage = props => {
   const toggle = () => setOpen(!open)
 
   const { products, popSize } = props.products
-  const { user } = props.user
+  const { user, isAuthenticated } = props.user
   const { errors } = props.error.msg
 
   const [Skip, setSkip] = useState(0)
   const [Limit, setLimit] = useState(8)
   const [Filters, setFilters] = useState([])
   const [SearchTerm, setSearchTerm] = useState('')
-
+  var formatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  });
   // Render image product
   const renderCartImage = (images) => {
     if (images.length > 0) {
@@ -112,8 +115,15 @@ const LandingPage = props => {
   }
   const onAddToCart = id => {
     try {
-      props.addToCart(id)
-      alert('Add product successfully')
+      if (!isAuthenticated) {
+        const confirm = window.confirm('Ban chua dang nhap')
+        if (confirm) {
+          props.history.push('/login')
+        }
+      } else {
+        props.addToCart(id)
+        alert('Add product successfully')
+      }
     } catch{
       alert('Add product fail')
     }
@@ -199,7 +209,7 @@ const LandingPage = props => {
                             }} />
                           </Button>
                         </Card.Content>
-                        : (product.poster === user._id && (
+                        : (product.poster._id === user._id && (
                           <Card.Content
                             style={{
                               position: 'absolute',
@@ -250,7 +260,7 @@ const LandingPage = props => {
                     >{product.description}</Card.Description>
                     <Card.Description style={{
                       color: 'red'
-                    }}>{product.price}$</Card.Description>
+                    }}>{formatter.format(product.price)}</Card.Description>
                     <Card.Meta
                       // style={{
                       //   position: 'absolute',
@@ -268,8 +278,9 @@ const LandingPage = props => {
                     </Card.Meta>
                   </Card.Content>
                   <Card.Content extra>
-                    {
-                      user && (product.poster === user._id ? (<div>your own product</div>) : (
+
+                    {/* {
+                      user && (product.poster === user._id ? (<div>Your own product</div>) : (
                         <Button onClick={onAddToCart.bind(this, product._id)}
                           color='teal'
                         >
@@ -281,11 +292,29 @@ const LandingPage = props => {
                           />
                         </Button>
                       ))
+                    } */}
+                    {
+                      user && (product.poster._id === user._id) ? (<div>Your own product</div>) :
+                        user &&  (<div>
+                          Poster:&nbsp;{product.poster.email}<Button onClick={onAddToCart.bind(this, product._id)}
+                            color='teal'
+                            floated='right'
+                          >
+                            <Icon name='cart plus'
+                              style={{
+                                padding: '0px',
+                                margin: '0px'
+                              }}
+                            />
+                          </Button>
+                        </div>
+                        )
                     }
                     {
                       !user && (
                         <Button onClick={onAddToCart.bind(this, product._id)}
                           color='teal'
+                          floated='right'
                         >
                           <Icon name='cart plus'
                             style={{

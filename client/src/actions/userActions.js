@@ -28,7 +28,8 @@ import {
   GET_OWN_PAYMENT_LIST,
   GET_PAYMENT_LIST_BY_ID,
   ADMIN_GET_PAYMENT_LIST_BY_ID,
-  UPDATE_STATUS_PAYMENT
+  UPDATE_STATUS_PAYMENT,
+  UPDATE_USER_FAIL
 } from './types'
 import { returnErrors } from './errorActions'
 
@@ -271,6 +272,12 @@ export const updateUserInfor = ({ firstName, lastName, phone }) => (dispatch, ge
       dispatch({
         type: UPDATE_USER_INFOR,
         payload: res.data
+      })
+    })
+    .catch(err => {
+      dispatch(returnErrors(err.response.data, err.response.status, 'UPDATE_USER_FAIL'))
+      dispatch({
+        type: UPDATE_USER_FAIL
       })
     })
 }

@@ -47,6 +47,10 @@ const UpdateProductPage = props => {
       quantity: values.quantity
     }
     props.updateProduct(productId, varibles)
+    const confirm = window.confirm('Update success')
+    if(confirm)
+      props.history.push('/user/ownProduct')
+    
   }
   const onDelete = image => {
     const currentImage = images.indexOf(image)

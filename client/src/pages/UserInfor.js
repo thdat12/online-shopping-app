@@ -1,12 +1,18 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
-import { Button, Segment, Container, Icon } from 'semantic-ui-react'
+import { Link, Redirect } from 'react-router-dom'
+import { Button, Segment, Container, Icon, Message } from 'semantic-ui-react'
 
 const UserInfor = props => {
-  const { user } = props.user
+  const { user, msg } = props.user
+  const { errors } = props.error.msg
+
   return (
     <div>
+      {errors && (errors.username || errors.phone) && (
+        <Redirect to='/user/update' />
+      )}
+
       {user && (
         <Container
           style={{
@@ -18,6 +24,9 @@ const UserInfor = props => {
             color: 'teal',
           }}
         >
+          {/* {msg && (
+            <Message success>{msg}</Message>
+          )} */}
           <Segment.Group>
             <Segment><Icon name='user' />Name:&nbsp;{user.firstName}&nbsp;{user.lastName}
             </Segment>
@@ -45,7 +54,8 @@ const UserInfor = props => {
 }
 
 const mapStateToProps = state => ({
-  user: state.user
+  user: state.user,
+  error: state.error
 })
 
 export default connect(mapStateToProps)(UserInfor)

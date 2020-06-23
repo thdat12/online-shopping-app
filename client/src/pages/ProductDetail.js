@@ -31,6 +31,10 @@ const ProductDetail = props => {
     props.addToCart(id);
     alert("Add to cart success")
   }
+  var formatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  });
   return (
     <div>
       <Container>
@@ -48,6 +52,10 @@ const ProductDetail = props => {
                   marginBottom: '1rem'
                 }}>
                   {detailProduct.title}
+                  <div style={{ fontSize: '1rem', color: 'black', marginTop:'1rem' }}>
+                    ID:
+                  {(detailProduct._id + '').slice(0, 5).toUpperCase()}
+                  </div>
                 </div>
                 <div
                   style={{
@@ -55,7 +63,7 @@ const ProductDetail = props => {
                     color: 'red'
                   }}
                 >
-                  {detailProduct.price}$
+                  {formatter.format(detailProduct.price)}
                 </div>
               </Segment>
               <Segment style={{
@@ -64,10 +72,14 @@ const ProductDetail = props => {
                 {detailProduct.description}
               </Segment>
               <Segment>
+                Status:&nbsp;&nbsp;
+                {detailProduct.quantity > 0 ? 'Available' : 'Sold Out'}
+              </Segment>
+              <Segment>
                 {
                   (user && detailProduct.poster) && (
                     (detailProduct.poster._id === user._id)
-                      ? (<h4>your product</h4>) : (
+                      ? (<h4>Your product</h4>) : (
                         <Button onClick={onAddToCart.bind(this, detailProduct._id)} color='teal'>
                           <Icon name='cart' />BUY
                         </Button>

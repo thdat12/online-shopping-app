@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { login } from '../actions/userActions'
 import { clearErrors } from '../actions/errorActions'
 
-import { Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react';
+import { Button, Form, Grid, Header, Message, Segment, Container } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 
 const Login = props => {
@@ -28,7 +28,7 @@ const Login = props => {
   }
 
   return (
-    <div>
+    <Container>
       {
         errors && (
           Object.keys(errors).length > 0 && (
@@ -56,6 +56,7 @@ const Login = props => {
                 placeholder='E-mail address'
                 value={values.email}
                 onChange={onChange}
+                error={errors&&errors.email?true:false}
               />
               <Form.Input
                 fluid
@@ -66,6 +67,7 @@ const Login = props => {
                 type='password'
                 value={values.password}
                 onChange={onChange}
+                error={errors&&errors.password?true:false}
               />
               <Button type='submit' color='yellow' fluid size='large'>Submit</Button>
             </Segment>
@@ -75,7 +77,7 @@ const Login = props => {
           </Form>
         </Grid.Column>
       </Grid>
-    </div>
+    </Container>
   )
 }
 

@@ -20,7 +20,8 @@ import {
   RESET_PASSWORD,
   GET_OWN_PAYMENT_LIST,
   GET_PAYMENT_LIST_BY_ID,
-  UPDATE_STATUS_PAYMENT
+  UPDATE_STATUS_PAYMENT,
+  UPDATE_USER_FAIL
 } from '../actions/types'
 
 const initialState = {
@@ -158,6 +159,11 @@ export default function (state = initialState, action) {
       return{
         ...state,
       }   
+    case UPDATE_USER_FAIL:
+      return{
+        ...state,
+        msg: null
+      }  
     default:
       return state
   }
